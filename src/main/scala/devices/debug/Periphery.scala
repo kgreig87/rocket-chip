@@ -137,9 +137,19 @@ trait HasPeripheryDebug { this: BaseSubsystem =>
       zip debugmod.module.io.apb_clock
       zip debugmod.module.io.apb_reset).foreach {
       case (((io, apb), c ), r) =>
-        apb.out(0)._1 <> io
-        c:= io.clock
-        r:= io.reset
+        val apbPort = apb.out(0)._1
+        apbPort.psel    := io.psel
+        apbPort.penable := io.penable
+        apbPort.pwrite  := io.pwrite
+        apbPort.paddr   := io.paddr
+        apbPort.pwdata  := io.pwdata
+        apbPort.pstrb   := io.pstrb
+        apbPort.pprot   := io.pprot
+        io.prdata       := apbPort.prdata
+        io.pready       := apbPort.pready
+        io.pslverr      := apbPort.pslverr
+        c := io.clock
+        r := io.reset
     }
 
     debugmod.module.io.debug_reset := debug.reset

@@ -23,7 +23,12 @@ class APBDebugRegisters()(implicit p: Parameters) extends LazyModule {
 
   lazy val module = new Impl
   class Impl extends LazyModuleImp(this){
-    node.regmap(p(APBDebugRegistersKey).toList:_*)
+    val regs = p(APBDebugRegistersKey).toList
+    if (regs.nonEmpty) {
+      node.regmap(regs:_*)
+    } else {
+      node.regmap(0 -> Seq(RegField(32)))
+    }
 
   }
 }
